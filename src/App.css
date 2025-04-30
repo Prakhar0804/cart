@@ -1,0 +1,17 @@
+/* Base styles - Moved to index.css */
+
+/* Smooth scrolling - Moved to index.css */
+
+/* Better font rendering - Moved to index.css */
+
+/* Focus outline styles - Kept */
+:focus {
+  outline: 2px solid rgba(59, 130, 246, 0.5); /* Equivalent to blue-500 with 50% opacity */
+  outline-offset: 2px;
+}
+
+/* Selection styles - Kept */
+::selection {
+  background-color: rgba(59, 130, 246, 0.2); /* Equivalent to blue-500 with 20% opacity */
+  color: inherit;
+}

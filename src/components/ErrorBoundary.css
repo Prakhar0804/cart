@@ -1,0 +1,100 @@
+/* ErrorBoundary Styles */
+
+.error-boundary-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f9fafb; /* bg-gray-50 */
+  padding: 1rem; /* p-4 */
+}
+
+.error-boundary-card {
+  max-width: 28rem; /* max-w-md */
+  width: 100%;
+  background-color: #ffffff; /* bg-white */
+  border-radius: 1rem; /* rounded-2xl */
+  border: 1px solid #e5e7eb; /* border-gray-200 */
+  padding: 2rem; /* p-8 */
+  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1); /* Similar to other cards */
+}
+
+.error-boundary-header {
+  text-align: center;
+  margin-bottom: 1.5rem; /* mb-6 */
+}
+
+.error-boundary-icon {
+  font-size: 2.25rem; /* text-4xl */
+  line-height: 2.5rem;
+  display: inline-block; /* To allow margin */
+}
+
+.error-boundary-title {
+  font-size: 1.25rem; /* text-xl */
+  line-height: 1.75rem;
+  font-weight: 700; /* font-bold */
+  color: #111827; /* text-gray-900 */
+  margin-top: 1rem; /* mt-4 */
+}
+
+.error-boundary-message {
+  color: #6b7280; /* text-gray-500 */
+  margin-top: 0.5rem; /* mt-2 */
+}
+
+.error-boundary-stacktrace {
+  margin-top: 1rem; /* mt-4 */
+  padding: 1rem; /* p-4 */
+  background-color: #f9fafb; /* bg-gray-50 */
+  border-radius: 0.5rem; /* rounded-lg */
+  overflow: auto;
+  max-height: 12rem; /* max-h-48 */
+  border: 1px solid #e5e7eb; /* Add border */
+}
+
+.error-boundary-stacktrace pre {
+  font-size: 0.75rem; /* text-xs */
+  line-height: 1rem;
+  color: #4b5563; /* text-gray-600 */
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+.error-boundary-actions {
+  margin-top: 1.5rem; /* mt-6 */
+  display: flex;
+  gap: 0.75rem; /* gap-3 */
+}
+
+.error-boundary-button {
+  flex: 1 1 0%;
+  height: 3rem; /* h-12 */
+  border-radius: 0.5rem; /* rounded-lg */
+  font-weight: 500; /* font-medium */
+  transition: background-color 0.15s ease-in-out, color 0.15s ease-in-out, border-color 0.15s ease-in-out; /* transition-colors */
+  cursor: pointer;
+}
+
+.error-boundary-button:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.5);
+}
+
+.error-boundary-button-primary {
+  background-color: #2563eb; /* bg-blue-600 */
+  color: #ffffff; /* text-white */
+}
+
+.error-boundary-button-primary:hover {
+  background-color: #1d4ed8; /* hover:bg-blue-700 */
+}
+
+.error-boundary-button-secondary {
+  background-color: #e5e7eb; /* bg-gray-200 */
+  color: #374151; /* text-gray-700 */
+}
+
+.error-boundary-button-secondary:hover {
+  background-color: #d1d5db; /* hover:bg-gray-300 */
+} 

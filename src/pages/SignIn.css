@@ -1,0 +1,93 @@
+/* SignIn Page Styles */
+
+.signin-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem; 
+  background-color: var(--bg-base); /* Use CSS var */
+}
+
+.signin-form-container {
+  width: 100%;
+  max-width: 26rem; /* Slightly smaller max-width */
+}
+
+.signin-card {
+  /* Use base card styles + specific overrides */
+  background-color: var(--bg-card);
+  border-radius: 1rem; /* 16px */
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-lg);
+  padding: 2.5rem; /* More padding */
+}
+
+.signin-header {
+  text-align: center;
+  margin-bottom: 2.5rem; /* More spacing */
+}
+
+.signin-title {
+  font-size: 1.5rem; /* 24px */
+  font-weight: 700; 
+  color: var(--text-primary);
+  margin-bottom: 0.5rem; 
+}
+
+.signin-subtitle {
+  color: var(--text-secondary);
+  font-size: 0.875rem; /* 14px */
+}
+
+.signin-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem; /* Increased gap */
+}
+
+.signin-input {
+  /* Use base input styles + specific overrides */
+  width: 100%;
+  background-color: var(--bg-input);
+  height: auto; /* Let padding define height */
+  padding: 0.75rem 1rem; /* 12px 16px */
+  border-radius: 0.5rem; /* 8px */
+  color: var(--text-primary);
+  border: 1px solid var(--border-input);
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  font-size: 0.875rem;
+}
+
+/* Base focus is handled in index.css */
+/* .signin-input:focus { ... } */
+
+.signin-error {
+  color: var(--error-text);
+  font-size: 0.875rem; 
+  padding: 0.75rem; 
+  background-color: var(--error-bg);
+  border: 1px solid var(--error-border);
+  border-radius: 0.5rem; 
+  text-align: center;
+}
+
+.signin-button {
+  /* Use base button styles */
+  /* .button */
+  /* .button-primary */
+  width: 100%;
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
+}
+
+.signin-footer {
+  margin-top: 2rem; /* More spacing */
+  text-align: center;
+}
+
+.signin-link {
+  /* Uses base link styles from index.css */
+  font-size: 0.875rem;
+  font-weight: 500;
+} 

@@ -1,0 +1,354 @@
+/* General Page Styles */
+.loading-page, .error-page, .info-page {
+  display: flex;
+  flex-direction: column; /* Stack elements vertically */
+  justify-content: center;
+  align-items: center;
+  min-height: 80vh; /* Use viewport height */
+  padding: 2rem;
+  text-align: center;
+  font-size: 1.1rem;
+  color: #4b5563;
+}
+
+.error-page {
+  color: #dc2626; /* Slightly darker red */
+}
+
+.info-page {
+    color: #059669; /* Green for success/info */
+}
+
+/* Base Card Style */
+.card {
+  background-color: #ffffff;
+  border: 1px solid #e5e7eb; /* Light gray border */
+  border-radius: 0.75rem; /* Slightly larger radius */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06); /* Subtle shadow */
+  margin-bottom: 1.5rem; /* Space between cards */
+  padding: 1.5rem;
+}
+
+/* --- Details Entry Screen --- */
+.details-entry-page {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start; /* Align card to top */
+  padding-top: 4rem;
+  min-height: 100vh;
+  background-color: #f9fafb; /* Light background */
+}
+
+.details-card {
+  width: 100%;
+  max-width: 450px;
+  background-color: #ffffff;
+  border-radius: 0.75rem;
+  padding: 2rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.details-header {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.details-header h1 {
+  font-size: 1.6rem;
+  font-weight: 600;
+  color: #111827;
+  margin-bottom: 0.3rem;
+}
+
+.details-header p {
+  font-size: 0.9rem;
+  color: #6b7280;
+}
+
+.customer-details-form h2 {
+  font-size: 1.2rem;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+  color: #374151;
+}
+
+.customer-details-form p {
+    font-size: 0.9rem;
+    color: #6b7280;
+    margin-bottom: 1.5rem;
+}
+
+.customer-details-form .form-group {
+  margin-bottom: 1.2rem;
+}
+
+.customer-details-form label {
+  display: block;
+  margin-bottom: 0.4rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #374151;
+}
+
+.details-input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.375rem;
+  font-size: 1rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.details-input:focus {
+  outline: none;
+  border-color: #6366f1; /* Indigo focus */
+  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.3);
+}
+
+.submit-details-button {
+  width: 100%;
+  padding: 0.8rem 1rem;
+  font-size: 1rem;
+  margin-top: 0.5rem;
+  /* Use global button styles */
+}
+
+.details-error {
+    margin-top: 1rem;
+}
+
+/* --- Main Shopping Screen --- */
+.shopping-active-page {
+  max-width: 900px; /* Allow wider view */
+  margin: 2rem auto;
+  padding: 0 1rem; /* Padding on sides */
+}
+
+.billing-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.billing-header h1 {
+  font-size: 1.8rem; /* Larger title */
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.billing-header p {
+  font-size: 0.95rem;
+  color: #4b5563;
+}
+
+.shopping-content {
+  display: grid;
+  grid-template-columns: 1fr; /* Default single column */
+  gap: 1.5rem;
+}
+
+/* Layout for wider screens */
+@media (min-width: 768px) {
+  .shopping-content {
+    grid-template-columns: repeat(2, 1fr); /* Two columns */
+    align-items: start; /* Align items to the top of their grid cell */
+  }
+  .scan-card {
+    grid-column: 1 / 2; /* Scanner on the left */
+    grid-row: 1 / 2;
+  }
+  .cart-details {
+      grid-column: 2 / 3; /* Items and Summary on the right */
+      grid-row: 1 / 2;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+  }
+}
+
+/* Card titles within shopping UI */
+.scan-section h3,
+.billing-items-section h2,
+.billing-summary-section h2 {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+/* Scan Section */
+.scan-card {
+  /* Uses base .card style */
+}
+
+.scan-section {
+  text-align: center;
+}
+
+.scan-toggle-button {
+  margin-bottom: 1rem;
+  padding: 0.6rem 1.2rem;
+}
+
+.scanner-container {
+  margin-top: 1rem;
+  border: 1px dashed #d1d5db;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  min-height: 280px; /* Ensure space for scanner element */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.scanner-container.hidden {
+  display: none;
+}
+
+#billing-barcode-scanner {
+  width: 100%;
+  max-width: 300px;
+}
+
+.processing-indicator,
+.scan-error {
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.processing-indicator { color: #6b7280; }
+.scan-error { color: #ef4444; }
+
+/* Items List Section */
+.items-card {
+  /* Uses base .card style */
+}
+
+.billing-items-section .empty-cart-message {
+    text-align: center;
+    color: #6b7280;
+    padding: 2rem 0;
+}
+
+.items-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  max-height: 400px; /* Adjust max height */
+  overflow-y: auto;
+}
+
+.item-entry {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.8rem 0.5rem;
+  border-bottom: 1px solid #f3f4f6;
+  transition: background-color 0.15s ease-in-out;
+}
+
+.item-entry:last-child { border-bottom: none; }
+.item-entry:hover { background-color: #f9fafb; }
+
+.item-name {
+  flex-grow: 1;
+  margin-right: 1rem;
+  color: #374151;
+  font-size: 0.95rem;
+}
+
+.item-price {
+  font-weight: 500;
+  color: #111827;
+  white-space: nowrap; /* Prevent price wrapping */
+}
+
+/* Summary Section */
+.summary-card {
+  /* Uses base .card style */
+}
+
+.summary-details p {
+  display: flex;
+  justify-content: space-between;
+  margin: 0.5rem 0;
+  font-size: 1rem;
+  color: #4b5563;
+}
+
+.summary-details p span:last-child {
+    font-weight: 500;
+}
+
+.summary-details .total-amount {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #111827;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #e5e7eb;
+}
+
+.pay-button {
+  width: 100%;
+  padding: 0.8rem 1rem;
+  font-size: 1.05rem;
+  margin-top: 1.5rem;
+}
+
+.info-text {
+    font-size: 0.85rem;
+    color: #6b7280;
+    text-align: center;
+    margin-top: 0.5rem;
+}
+
+/* Shared Button Styles (Ensure consistency) */
+.button {
+    padding: 0.6rem 1.2rem;
+    border: none;
+    border-radius: 0.375rem;
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 0.9rem;
+    transition: background-color 0.2s ease, box-shadow 0.2s ease;
+    line-height: 1.5;
+}
+
+.button-primary {
+    background-color: #4f46e5; /* Indigo */
+    color: white;
+}
+.button-primary:hover { background-color: #4338ca; }
+.button-primary:disabled { background-color: #a5b4fc; cursor: not-allowed; }
+
+.button-secondary {
+    background-color: #e5e7eb; /* Gray */
+    color: #374151;
+}
+.button-secondary:hover { background-color: #d1d5db; }
+.button-secondary:disabled { background-color: #f3f4f6; color: #9ca3af; cursor: not-allowed; }
+
+.button-success {
+    background-color: #10b981; /* Green */
+    color: white;
+}
+.button-success:hover { background-color: #059669; }
+.button-success:disabled { background-color: #a7f3d0; cursor: not-allowed; }
+
+/* Error Messages */
+.error-message {
+    color: #ef4444;
+    background-color: #fee2e2;
+    padding: 0.8rem 1rem;
+    border-radius: 0.375rem;
+    margin-top: 1rem; 
+    margin-bottom: 1rem;
+    border: 1px solid #fca5a5;
+    font-size: 0.9rem;
+}
+
+.general-error-bottom {
+    grid-column: 1 / -1; /* Span across grid columns if needed */
+} 

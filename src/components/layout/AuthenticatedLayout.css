@@ -1,0 +1,14 @@
+/* AuthenticatedLayout Styles */
+
+.auth-layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  /* Removed background-color, should inherit from body */
+}
+
+.auth-layout-main {
+  flex: 1 1 0%;
+  /* Add padding here if desired for all authenticated pages */
+  /* Example: padding: 1.5rem; */
+} 

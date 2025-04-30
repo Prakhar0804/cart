@@ -1,0 +1,146 @@
+/* CommandPalette Styles */
+
+.cp-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.3); /* Lighter overlay */
+  backdrop-filter: blur(4px); 
+  z-index: 50;
+  opacity: 0; /* GSAP */
+}
+
+.cp-container {
+  position: fixed;
+  top: 15%; /* Raise slightly */
+  left: 50%;
+  transform: translateX(-50%);
+  width: 600px; /* Slightly narrower */
+  max-width: 90vw;
+  background-color: var(--bg-card);
+  border-radius: 0.75rem; /* 12px */
+  box-shadow: var(--shadow-xl);
+  border: 1px solid var(--border-color);
+  opacity: 0; /* GSAP */
+  overflow: hidden; /* Hide overflowing content */
+}
+
+.cp-input-wrapper {
+  position: relative;
+}
+
+.cp-input {
+  width: 100%;
+  background-color: transparent;
+  height: auto;
+  padding: 1rem 4rem 1rem 1rem; /* Adjust padding for height and kbd */
+  color: var(--text-primary);
+  font-size: 1rem; /* 16px */
+  border-bottom: 1px solid var(--border-color);
+  border-top-left-radius: 0.75rem; /* Match container */
+  border-top-right-radius: 0.75rem;
+}
+
+.cp-input:focus {
+  outline: none;
+}
+
+.cp-kbd {
+  position: absolute;
+  right: 1rem; 
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 0.125rem 0.375rem; 
+  background-color: var(--bg-input-hover);
+  border-radius: 0.25rem; 
+  font-size: 0.75rem; 
+  color: var(--text-secondary);
+  border: 1px solid var(--border-color);
+}
+
+.cp-list-container {
+  padding: 0.5rem; 
+  max-height: 50vh; /* Adjusted max height */
+  overflow-y: auto;
+}
+
+.cp-loading-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 0; 
+}
+
+.cp-spinner {
+  animation: spin 1s linear infinite;
+  height: 1.25rem; 
+  width: 1.25rem; 
+  border-width: 2px;
+  border-color: var(--accent-primary);
+  border-top-color: transparent;
+  border-radius: 50%;
+}
+
+.cp-command-button {
+  width: 100%;
+  text-align: left;
+  padding: 0.75rem; /* Adjusted padding */
+  border-radius: 0.375rem; /* 6px */
+  transition: background-color 0.15s ease-in-out; 
+  border: none;
+  background: none;
+  cursor: pointer;
+  display: flex; /* Ensure button takes full width for flex alignment */
+  align-items: center;
+}
+
+.cp-command-button:hover,
+.cp-command-button:focus {
+  background-color: var(--bg-input-hover);
+  outline: none;
+}
+
+.cp-command-content {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem; 
+  width: 100%; /* Ensure content takes full width */
+}
+
+.cp-command-icon {
+  font-size: 1.125rem; /* 18px */
+  line-height: 1;
+  width: 1.5rem;
+  text-align: center;
+  color: var(--text-secondary);
+}
+
+.cp-command-title {
+  flex: 1 1 0%;
+  color: var(--text-primary);
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.cp-command-shortcut {
+  /* Same as .cp-kbd */
+  padding: 0.125rem 0.375rem; 
+  background-color: var(--bg-input-hover);
+  border-radius: 0.25rem; 
+  font-size: 0.75rem; 
+  color: var(--text-secondary);
+  border: 1px solid var(--border-color);
+  margin-left: auto; /* Push to the right */
+}
+
+.cp-no-results {
+  text-align: center;
+  padding: 2rem 0; 
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+}
+
+/* Spin animation definition */
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+} 

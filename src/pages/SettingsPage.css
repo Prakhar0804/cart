@@ -1,0 +1,33 @@
+.settings-page {
+  padding: 2rem;
+  background-color: #f9fafb; /* Light gray background */
+}
+
+.settings-page h2 {
+  margin-bottom: 1.5rem;
+  font-size: 1.875rem; /* Tailwind's text-3xl */
+  font-weight: 600;
+  color: #111827; /* Dark gray */
+}
+
+.settings-card {
+  background-color: white;
+  padding: 2rem;
+  border-radius: 0.5rem; /* Tailwind's rounded-lg */
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); /* Tailwind's shadow-md */
+}
+
+.settings-card p {
+  color: #4b5563; /* Gray text */
+  margin-bottom: 1rem;
+}
+
+.settings-card ul {
+  list-style: disc;
+  margin-left: 1.5rem;
+  color: #4b5563;
+}
+
+.settings-card li {
+  margin-bottom: 0.5rem;
+} 

@@ -1,0 +1,80 @@
+/* Cart Bills Page Layout */
+.cart-bills-page {
+  padding: 2rem;
+  background-color: #f9fafb; /* Light gray background */
+}
+
+.cart-bills-container {
+  max-width: 900px; /* Slightly wider for table */
+  margin: 0 auto;
+}
+
+.back-link {
+  display: inline-block;
+  margin-bottom: 1.5rem;
+  color: #3b82f6; /* Blue */
+  text-decoration: none;
+  font-weight: 500;
+}
+.back-link:hover {
+  text-decoration: underline;
+}
+
+.cart-bills-title {
+  margin-bottom: 1.5rem;
+  font-size: 1.875rem; /* Tailwind's text-3xl */
+  font-weight: 600;
+  color: #111827; /* Dark gray */
+}
+
+/* Container for the bills list/table, uses .card styles */
+.bills-list-container {
+  /* Inherits styles from .card */
+  padding: 0; /* Remove card padding if table has its own */
+  overflow-x: auto; /* Allow horizontal scrolling on small screens */
+}
+
+.bills-list-container p {
+    padding: 1.5rem; /* Add padding back if showing text like 'No bills found' */
+    color: #4b5563;
+}
+
+/* Bills Table Styling */
+.bills-table {
+  width: 100%;
+  border-collapse: collapse; /* Remove space between borders */
+}
+
+.bills-table th,
+.bills-table td {
+  padding: 0.75rem 1rem;
+  text-align: left;
+  border-bottom: 1px solid #e5e7eb; /* Light gray border */
+}
+
+.bills-table th {
+  font-weight: 600;
+  font-size: 0.875rem;
+  color: #4b5563; /* Gray header text */
+  background-color: #f9fafb; /* Very light gray background for header */
+}
+
+.bills-table td {
+  font-size: 0.875rem;
+  color: #374151; /* Darker gray text */
+}
+
+/* Style alternating rows slightly differently */
+.bills-table tbody tr:nth-child(even) {
+  background-color: #f9fafb;
+}
+
+/* Ensure error message styles are available if not globally defined */
+.error-message {
+  color: #ef4444; /* Red */
+  background-color: #fee2e2; /* Light red background */
+  padding: 0.75rem;
+  border-radius: 0.375rem;
+  margin-bottom: 1rem;
+  border: 1px solid #fca5a5; /* Red border */
+} 

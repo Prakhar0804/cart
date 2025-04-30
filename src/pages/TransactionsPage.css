@@ -1,0 +1,82 @@
+/* Transactions Page Layout */
+.transactions-page {
+  padding: 2rem;
+  background-color: #f9fafb; /* Light gray background */
+  min-height: calc(100vh - 64px); /* Adjust if header height differs */
+}
+
+.transactions-container {
+  max-width: 1200px; /* Match dashboard width */
+  margin: 0 auto;
+}
+
+.transactions-title {
+  margin-bottom: 2rem; /* More space below title */
+  font-size: 1.875rem; /* Tailwind's text-3xl */
+  font-weight: 600;
+  color: #111827; /* Dark gray */
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+/* Section Title (reused from Dashboard) */
+.section-title {
+  font-size: 1.25rem; /* text-xl */
+  font-weight: 500;
+  margin-bottom: 1.5rem;
+  color: #1f2937;
+}
+
+/* Summary Cards Section */
+.transactions-summary-section {
+  margin-bottom: 2rem; 
+}
+
+/* Reuse summary grid styles from Dashboard */
+.summary-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1rem;
+}
+
+/* Reuse summary card styles from Dashboard */
+.summary-card {
+  background-color: white;
+  padding: 1.5rem 1rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  text-align: center;
+}
+
+.summary-card-label {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+}
+
+.summary-card-amount {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #111827;
+}
+
+/* Placeholder for Detailed Transactions */
+.detailed-transactions-section {
+   /* Inherits .card styles */
+   padding: 1.5rem;
+}
+
+.detailed-transactions-section p {
+    color: #4b5563;
+}
+
+/* Ensure error message styles are available */
+.error-message {
+  color: #ef4444;
+  background-color: #fee2e2;
+  padding: 0.75rem;
+  border-radius: 0.375rem;
+  margin-bottom: 1rem;
+  border: 1px solid #fca5a5;
+} 

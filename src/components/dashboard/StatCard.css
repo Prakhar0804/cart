@@ -1,0 +1,58 @@
+/* StatCard Styles */
+
+.stat-card {
+  /* Assuming a base card style - we might need a shared card CSS */
+  /* Or apply these directly */
+  background-color: #ffffff;
+  border-radius: 0.75rem; /* Example: rounded-lg */
+  border: 1px solid #e5e7eb;
+  padding: 1rem; /* Example: p-4 */
+  box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1); /* shadow-md */
+  position: relative;
+  overflow: hidden;
+}
+
+.stat-card-content {
+  display: flex;
+  align-items: flex-start; /* items-start */
+  justify-content: space-between;
+}
+
+.stat-card-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem; /* space-y-2 */
+}
+
+.stat-card-title {
+  color: #6b7280; /* text-gray-500 */
+  font-size: 0.875rem; /* text-sm */
+  line-height: 1.25rem;
+}
+
+.stat-card-value {
+  font-size: 1.5rem; /* text-2xl */
+  line-height: 2rem;
+  font-weight: 700; /* font-bold */
+  color: #111827; /* text-gray-900 */
+}
+
+.stat-card-icon {
+  font-size: 1.5rem; /* text-2xl */
+  line-height: 2rem;
+  /* Add color if needed */
+}
+
+.stat-card-change {
+  margin-top: 0.5rem; /* mt-2 */
+  font-size: 0.875rem; /* text-sm */
+  line-height: 1.25rem;
+}
+
+.stat-card-change-positive {
+  color: #10b981; /* text-green-500 (adjusted from 400 for better contrast) */
+}
+
+.stat-card-change-negative {
+  color: #ef4444; /* text-red-500 (adjusted from 400) */
+} 

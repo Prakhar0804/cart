@@ -1,0 +1,132 @@
+/* StoreRegistration Page Styles */
+
+.store-reg-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  background-color: var(--bg-base);
+}
+
+.store-reg-form-container {
+  width: 100%;
+  max-width: 36rem; /* Adjusted max-width */
+}
+
+.store-reg-card {
+  /* Use base card styles */
+  background-color: var(--bg-card);
+  border-radius: 1rem; /* Slightly larger radius */
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-lg);
+  padding: 0; /* Remove base padding, handle internally */
+}
+
+.store-reg-progress-track {
+  height: 0.25rem; 
+  background-color: var(--border-color); /* Use lighter gray */
+  border-top-left-radius: 1rem;
+  border-top-right-radius: 1rem;
+  overflow: hidden;
+}
+
+.store-reg-progress-bar {
+  height: 100%;
+  background-color: var(--accent-primary);
+  transition: width 0.3s ease-out; 
+}
+
+.store-reg-content {
+  padding: 2.5rem; /* Consistent padding */
+}
+
+.store-reg-step {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem; /* Increased gap */
+  min-height: 150px; /* Add min-height to prevent layout shifts */
+}
+
+.store-reg-title {
+  font-size: 1.25rem; /* 20px */
+  line-height: 1.75rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.store-reg-input,
+.store-reg-select {
+  width: 100%;
+  background-color: var(--bg-input);
+  height: auto;
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  color: var(--text-primary);
+  border: 1px solid var(--border-input);
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  font-size: 0.875rem;
+}
+
+.store-reg-select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+  background-position: right 0.5rem center;
+  background-repeat: no-repeat;
+  background-size: 1.5em 1.5em;
+  padding-right: 2.5rem;
+}
+
+.store-reg-helper-text {
+  font-size: 0.75rem; /* 12px */
+  line-height: 1rem;
+  color: var(--text-secondary);
+}
+
+.store-reg-error {
+  margin-top: 1rem; 
+  padding: 0.75rem; 
+  border-radius: 0.5rem; 
+  background-color: var(--error-bg);
+  border: 1px solid var(--error-border);
+  color: var(--error-text);
+  font-size: 0.875rem; 
+  text-align: center;
+}
+
+.store-reg-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 2.5rem; /* Increased spacing */
+}
+
+.store-reg-button {
+  /* Uses base .button */
+}
+
+.store-reg-button-back {
+  /* Uses .button-secondary */
+}
+
+.store-reg-button-next {
+  /* Uses .button-primary */
+  display: flex; /* Keep flex for spinner */
+  align-items: center;
+  gap: 0.5rem; 
+}
+
+.store-reg-spinner {
+  animation: spin 1s linear infinite;
+  height: 1rem; 
+  width: 1rem; 
+  border-width: 2px;
+  border-color: #ffffff; /* Spinner color on primary button */
+  border-top-color: transparent; 
+  border-radius: 50%;
+}
+
+/* Ensure spin animation is defined if not global */
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+} 

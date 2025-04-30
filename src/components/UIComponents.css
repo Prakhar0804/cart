@@ -1,0 +1,116 @@
+/* UIComponents Styles */
+
+/* CommandBar Styles (Seems unused, styling minimally) */
+.ui-command-bar {
+  position: fixed;
+  top: 1rem; /* top-4 */
+  left: 50%;
+  transform: translateX(-50%);
+  width: 640px;
+  max-width: 90vw;
+  background-color: #ffffff; /* Base white */
+  border: 1px solid #e5e7eb; /* border-gray-200 */
+  border-radius: 0.75rem; /* rounded-xl */
+  box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1); /* shadow-2xl */
+  padding: 0.5rem; /* p-2 */
+  /* backdrop-filter: blur(8px); Example blur */
+}
+
+/* SearchInput Styles (Potentially unused) */
+.ui-search-input {
+  width: 100%;
+  background-color: #f9fafb; /* bg-gray-50 */
+  height: 3rem; /* h-12 */
+  padding-left: 1rem; /* px-4 */
+  padding-right: 1rem;
+  color: #111827; /* text-gray-900 */
+  font-size: 1.125rem; /* text-lg */
+  line-height: 1.75rem;
+  border: none; /* border-none */
+  border-radius: 0.5rem; /* rounded-lg */
+}
+
+.ui-search-input::placeholder {
+  color: #9ca3af; /* placeholder:text-gray-400 */
+}
+
+.ui-search-input:focus {
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5); /* focus:ring-2 focus:ring-blue-500/50 */
+}
+
+/* ActionCard Styles (Potentially unused) */
+.ui-action-card {
+  width: 100%;
+  text-align: left;
+  padding: 0.75rem; /* p-3 */
+  border-radius: 0.5rem; /* rounded-lg */
+  transition: background-color 0.15s ease-in-out; /* transition-colors */
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
+.ui-action-card:hover {
+  background-color: #f3f4f6; /* hover:bg-gray-100 */
+}
+
+.ui-action-card-content {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem; /* gap-3 */
+}
+
+.ui-action-card-icon {
+  font-size: 1.5rem; /* text-2xl */
+  line-height: 2rem;
+}
+
+.ui-action-card-text h3 {
+  color: #111827; /* text-gray-900 */
+  font-weight: 500; /* font-medium */
+  margin: 0;
+}
+
+.ui-action-card-text p {
+  color: #6b7280; /* text-gray-500 */
+  font-size: 0.875rem; /* text-sm */
+  line-height: 1.25rem;
+  margin: 0;
+}
+
+/* LoadingSpinner Styles (If needed as standalone) */
+.ui-loading-spinner-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ui-loading-spinner {
+  animation: spin 1s linear infinite;
+  /* Default size (md) */
+  height: 1.5rem; /* h-6 */
+  width: 1.5rem; /* w-6 */
+  color: #2563eb; /* text-blue-600 */
+}
+
+.ui-loading-spinner.sm {
+  height: 1rem; /* h-4 */
+  width: 1rem; /* w-4 */
+}
+
+.ui-loading-spinner.lg {
+  height: 2rem; /* h-8 */
+  width: 2rem; /* w-8 */
+}
+
+/* Ensure spin animation is defined if not global */
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+} 

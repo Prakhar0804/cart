@@ -1,0 +1,188 @@
+/* Inventory Page Layout */
+.inventory-page {
+  padding: 2rem;
+  background-color: #f9fafb; /* Light gray background */
+  min-height: calc(100vh - 64px); /* Adjust if header height differs */
+}
+
+.inventory-container {
+  max-width: 1100px; /* Adjust as needed */
+  margin: 0 auto;
+}
+
+.inventory-title {
+  margin-bottom: 2rem;
+  font-size: 1.875rem; /* text-3xl */
+  font-weight: 600;
+  color: #111827; /* Dark gray */
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+/* Section Title (can reuse from other pages or define here) */
+.section-title {
+  font-size: 1.25rem; /* text-xl */
+  font-weight: 500;
+  margin-bottom: 1.5rem;
+  color: #1f2937;
+}
+
+/* Placeholder Sections */
+.add-item-section,
+.inventory-list-section {
+  /* Inherits base .card styles */
+  margin-bottom: 1.5rem;
+  padding: 1.5rem; /* Ensure padding if not inherited */
+}
+
+.add-item-section p,
+.inventory-list-section p {
+  color: #4b5563;
+}
+
+/* Ensure base card styles are available if not global */
+.card {
+  background-color: white;
+  padding: 1.5rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  margin-bottom: 1.5rem;
+}
+
+/* Add Item Section (Step 1) */
+.add-item-section {
+  /* Inherits card */
+}
+
+.product-details-form .button-primary {
+  margin-top: 1.5rem; /* Space above button */
+}
+
+/* Form Grid Layout */
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem 1.5rem; /* Row and column gap */
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-size: 0.875rem;
+  color: #374151;
+  font-weight: 500;
+}
+
+.form-group input[type="text"],
+.form-group input[type="number"] {
+  width: 100%;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.375rem;
+  font-size: 1rem;
+  box-sizing: border-box; /* Include padding and border in element's total width/height */
+}
+.form-group input:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 1px #3b82f6;
+}
+
+/* Scan Items Section (Step 2) */
+.scan-items-section {
+  /* Inherits card */
+}
+
+.scan-items-section > p {
+  color: #4b5563;
+  margin-bottom: 1rem;
+}
+
+.scanner-container {
+  margin: 1.5rem 0;
+  display: flex;
+  justify-content: center;
+}
+
+.barcode-scanner-element {
+  max-width: 400px; /* Limit scanner width */
+  width: 100%;
+  border: 1px dashed #d1d5db;
+  border-radius: 0.375rem;
+  overflow: hidden; /* Clip video feed */
+}
+
+.scan-error {
+  /* Inherits .error-message, specific placement */
+  margin-top: 0.5rem;
+}
+
+.scanned-items-feedback {
+  margin: 1rem 0;
+  padding: 0.75rem;
+  background-color: #f3f4f6;
+  border-radius: 0.375rem;
+  text-align: center;
+  font-size: 0.875rem;
+  color: #374151;
+}
+
+.scanned-items-feedback p {
+    margin: 0;
+}
+
+.scan-actions {
+  display: flex;
+  justify-content: space-between; /* Align buttons */
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #e5e7eb;
+}
+
+/* Success button style (can reuse button-info or define new) */
+.button-success {
+  background-color: #10b981; /* Emerald green */
+  color: white;
+}
+.button-success:hover {
+  background-color: #059669;
+}
+.button-success:disabled {
+  background-color: #a7f3d0; /* Lighter green */
+  cursor: not-allowed;
+}
+
+
+/* Inventory List Section (Placeholder) */
+.inventory-list-section {
+  /* Inherits card */
+  padding: 1.5rem;
+}
+.inventory-list-section p {
+  color: #4b5563;
+}
+
+/* Global/Shared Styles (Ensure these exist) */
+.button {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 0.375rem;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.2s ease;
+}
+.button-primary { /* ... */ background-color: #3b82f6; color: white; }
+.button-primary:hover { /* ... */ background-color: #2563eb; }
+.button-primary:disabled { /* ... */ background-color: #9ca3af; cursor: not-allowed; }
+.button-secondary { /* ... */ background-color: #e5e7eb; color: #374151; }
+.button-secondary:hover { /* ... */ background-color: #d1d5db; }
+.button-secondary:disabled { /* ... */ background-color: #f3f4f6; color: #9ca3af; cursor: not-allowed; }
+
+.error-message {
+  color: #ef4444; 
+  background-color: #fee2e2; 
+  padding: 0.75rem;
+  border-radius: 0.375rem;
+  margin-bottom: 1rem;
+  border: 1px solid #fca5a5;
+} 

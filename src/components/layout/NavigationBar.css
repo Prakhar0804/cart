@@ -1,0 +1,117 @@
+/* NavigationBar Styles */
+
+.navbar {
+  /* Mobile styles (default) */
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: var(--bg-card); /* White background */
+  border-top: 1px solid var(--border-color);
+  padding: 0.5rem; /* Reduced padding */
+  z-index: 40;
+}
+
+.navbar-container {
+  max-width: 80rem; 
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.navbar-links {
+  display: flex;
+  justify-content: space-around;
+}
+
+.navbar-link {
+  display: flex;
+  flex-direction: column; /* Stack icon and label on mobile */
+  align-items: center;
+  gap: 0.125rem; /* Reduced gap */
+  padding: 0.5rem 0.75rem; /* Adjusted padding */
+  border-radius: 0.5rem; 
+  transition: background-color 0.15s ease-in-out, color 0.15s ease-in-out;
+  text-decoration: none;
+  color: var(--text-secondary);
+  font-size: 0.75rem; /* Smaller font size */
+  line-height: 1rem;
+  position: relative; /* Keep for potential indicators */
+}
+
+.navbar-link:hover {
+  background-color: var(--bg-input-hover);
+  color: var(--text-primary); 
+}
+
+.navbar-link-active {
+  color: var(--accent-primary);
+}
+
+.navbar-link-active:hover {
+  background-color: transparent; /* No hover bg for active */
+  color: var(--accent-primary);
+}
+
+.navbar-icon {
+  font-size: 1.25rem; /* Keep icon size */
+  line-height: 1;
+}
+
+.navbar-label {
+  display: block; /* Show label on mobile too */
+}
+
+/* Remove indicator dot styles - simplifying */
+/* .navbar-indicator-top, ... */
+
+/* Desktop styles (md breakpoint ~768px) */
+@media (min-width: 768px) {
+  .navbar {
+    position: static;
+    border-top: none;
+    border-bottom: 1px solid var(--border-color);
+    background-color: var(--bg-base); /* Light gray background */
+    padding: 0.75rem 1.5rem; /* Desktop padding */
+  }
+
+  .navbar-links {
+    justify-content: flex-start;
+    gap: 0.5rem; 
+  }
+
+  .navbar-link {
+    flex-direction: row; /* Side-by-side on desktop */
+    gap: 0.5rem; /* Gap between icon and text */
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem; /* Slightly larger font */
+    line-height: 1.25rem;
+  }
+
+  .navbar-link-active {
+    background-color: var(--bg-input-hover); /* Subtle active background */
+    color: var(--accent-primary);
+  }
+  
+  .navbar-link-active:hover {
+    background-color: var(--bg-input-hover); /* Maintain active bg on hover */
+  }
+
+  .navbar-icon {
+    font-size: 1rem; 
+  }
+}
+
+/* Mobile-only indicator dot styles (applied conditionally in JSX) */
+.navbar-indicator-top-active {
+  position: absolute;
+  top: -0.25rem; /* -top-1 */
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0.25rem; /* w-1 */
+  height: 0.25rem; /* h-1 */
+  background-color: #2563eb; /* Use accent color */
+  border-radius: 9999px; /* rounded-full */
+  display: block; /* Override initial display:none */
+}
+
+/* We can skip the bottom hover indicator as it's complex and maybe not essential */ 
