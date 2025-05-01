@@ -1,4 +1,8 @@
-# React + Vite
+# AUTOCARTx
+
+AUTOCARTx is a smart trolley project designed to enhance the shopping experience by automating cart and billing processes. This project integrates hardware and software components to provide a seamless and efficient solution for customers and store owners.
+
+## React + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 

@@ -489,8 +489,13 @@ const BillingDashboardPage = () => {
                 currentItems: updatedItems,
                 currentTotalAmount: newTotalAmount,
                 currentExpectedWeight: newTotalWeight,
-                lastActivityAt: serverTimestamp()
             });
+
+            // Refresh sessionData after transaction
+            const updatedSessionSnap = await getDoc(sessionRef);
+            if (updatedSessionSnap.exists()) {
+                setSessionData(updatedSessionSnap.data());
+            }
         });
         console.log(`Transaction successful for barcode: ${barcode}`);
          if (scannerRef.current) {
