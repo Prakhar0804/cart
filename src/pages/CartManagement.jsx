@@ -134,10 +134,16 @@ const CartManagement = () => {
 
     setIsAddingCart(true);
     try {
+      // First validate the cartId format (you can add more validation if needed)
+      if (!/^[a-zA-Z0-9-_]+$/.test(trimmedCartId)) {
+        throw new Error('Cart ID can only contain letters, numbers, hyphens and underscores');
+      }
+      
       const newCartRef = doc(db, 'carts', trimmedCartId);
       
       const cartData = {
-          cartDisplayId: trimmedCartId,
+          cartId: trimmedCartId, // Primary identifier
+          cartDisplayId: trimmedCartId, // For display purposes
           storeId: currentUser.uid,
           status: 'available',
           addedAt: serverTimestamp(),

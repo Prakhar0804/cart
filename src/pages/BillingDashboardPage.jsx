@@ -1,81 +1,95 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
-import { doc, getDoc, onSnapshot, runTransaction, collection, query, where, getDocs, serverTimestamp, arrayUnion, arrayRemove, increment, updateDoc, addDoc, setDoc, deleteDoc } from 'firebase/firestore';
+import { 
+  collection, 
+  doc, 
+  getDoc, 
+  addDoc, 
+  updateDoc, 
+  query, 
+  where, 
+  getDocs, 
+  serverTimestamp, 
+  runTransaction, 
+  onSnapshot, 
+  deleteDoc, 
+  setDoc, 
+  writeBatch
+} from 'firebase/firestore';
 import { db } from '../firebase/config';
+import { useAuth } from '../context/AuthContext';
+import HardwareStatus from '../components/HardwareStatus';
 import { Html5QrcodeScanner } from 'html5-qrcode';
-import './BillingDashboardPage.css'; // Create later
+import './BillingDashboardPage.css';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 
-// Helper function to format currency (can be moved to a utils file)
+// Helper function to format currency
 const formatCurrency = (amount) => {
   return new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR' }).format(amount || 0);
 };
 
-// --- Bill Component (for PDF generation) ---
-// This component will be rendered off-screen for capture
+// Bill Component for PDF generation (rendered off-screen)
 const BillComponent = React.forwardRef(({ billData }, ref) => {
   if (!billData) return null;
 
   const { 
     storeName = 'Store',
-    storeAddress = '', // Add later if needed
-    storeUpiId = '', // Add later if needed
+    storeAddress = '',
+    storeUpiId = '',
     billNumber = 'N/A',
     cartDisplayId = 'N/A',
     customerName = 'Customer',
     customerPhoneNumber = 'N/A',
     items = [],
     totalAmount = 0,
-    date = new Date().toLocaleString() // Simple date for now
+    date = new Date().toLocaleString()
   } = billData;
 
   return (
-    <div ref={ref} className="bill-container-for-pdf" style={{ padding: '20px', width: '400px', border: '1px solid #ccc', fontFamily: 'sans-serif', backgroundColor: 'white', color: 'black' }}>
-      <h2 style={{ textAlign: 'center', marginBottom: '10px' }}>{storeName}</h2>
-      {storeAddress && <p style={{ textAlign: 'center', fontSize: '0.8em', marginBottom: '20px' }}>{storeAddress}</p>}
-      <hr style={{ borderTop: '1px dashed #ccc' }} />
+    <div ref={ref} className="bill-container-for-pdf">
+      <h2>{storeName}</h2>
+      {storeAddress && <p>{storeAddress}</p>}
+      <hr />
       <p><strong>Bill No:</strong> {billNumber}</p>
       <p><strong>Date:</strong> {date}</p>
       <p><strong>Cart ID:</strong> {cartDisplayId}</p>
       <p><strong>Customer:</strong> {customerName} ({customerPhoneNumber})</p>
-      <hr style={{ borderTop: '1px dashed #ccc', margin: '15px 0' }} />
-      <h3 style={{ marginBottom: '10px' }}>Items:</h3>
-      <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.9em' }}>
+      <hr />
+      <h3>Items:</h3>
+      <table>
         <thead>
           <tr>
-            <th style={{ textAlign: 'left', padding: '5px', borderBottom: '1px solid #eee' }}>Item</th>
-            <th style={{ textAlign: 'right', padding: '5px', borderBottom: '1px solid #eee' }}>Price</th>
+            <th>Item</th>
+            <th>Price</th>
           </tr>
         </thead>
         <tbody>
           {items.map((item, index) => (
             <tr key={`${item.barcode}-${index}`}>
-              <td style={{ padding: '5px' }}>{item.name}</td>
-              <td style={{ textAlign: 'right', padding: '5px' }}>{formatCurrency(item.price)}</td>
+              <td>{item.name}</td>
+              <td>{formatCurrency(item.price)}</td>
             </tr>
           ))}
         </tbody>
       </table>
-      <hr style={{ borderTop: '1px dashed #ccc', margin: '15px 0' }} />
-      <p style={{ textAlign: 'right', fontWeight: 'bold', fontSize: '1.1em' }}>
-        Total Amount: {formatCurrency(totalAmount)}
-      </p>
-      <hr style={{ borderTop: '1px dashed #ccc', marginTop: '15px' }} />
-      {storeUpiId && <p style={{ fontSize: '0.8em', marginTop: '10px' }}>Pay via UPI: {storeUpiId}</p>}
-      <p style={{ textAlign: 'center', fontSize: '0.8em', marginTop: '20px' }}>Thank you for shopping!</p>
+      <hr />
+      <p><strong>Total Amount:</strong> {formatCurrency(totalAmount)}</p>
+      {storeUpiId && <p>Pay via UPI: {storeUpiId}</p>}
+      <p>Thank you for shopping!</p>
     </div>
   );
 });
 
 const BillingDashboardPage = () => {
-  const { cartId } = useParams(); // Get cartId (Firestore Doc ID) from URL
+  const { cartId } = useParams();
+  const { currentUser } = useAuth();
   const [sessionData, setSessionData] = useState(null);
   const [storeData, setStoreData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
 
-  // --- State for Customer Details Entry ---
+  // Customer Details State
   const [customerPhoneNumber, setCustomerPhoneNumber] = useState('');
   const [customerName, setCustomerName] = useState('');
   const [isSubmittingDetails, setIsSubmittingDetails] = useState(false);
@@ -83,187 +97,145 @@ const BillingDashboardPage = () => {
   const [isActivating, setIsActivating] = useState(false);
   const [provisionalBillNo, setProvisionalBillNo] = useState('');
 
-  // --- State for Bill Generation ---
+  // Bill Generation State
   const [isGeneratingBill, setIsGeneratingBill] = useState(false);
-  const billRef = useRef(); // Ref for the BillComponent
+  const billRef = useRef();
 
-  // --- State for Scanner ---
+  // Scanner State
   const [showScanner, setShowScanner] = useState(false);
   const [scanError, setScanError] = useState('');
   const [isProcessingScan, setIsProcessingScan] = useState(false);
   const scannerRef = useRef(null);
   const qrCodeScannerId = "billing-barcode-scanner";
 
-  // Flag to prevent multiple creation attempts if listener fires quickly
-  const sessionCreationAttempted = useRef(false);
-
-  // Real-time listener for Cart Session with Auto-Creation Logic
   useEffect(() => {
-    if (!cartId) {
-      setError('No Cart ID provided in URL.');
-      setIsLoading(false);
-      return;
-    }
+    let unsubscribe;
 
-    setIsLoading(true);
-    setError('');
-    sessionCreationAttempted.current = false; // Reset attempt flag on ID change
-
-    const sessionRef = doc(db, 'cartSessions', cartId);
-
-    const unsubscribe = onSnapshot(sessionRef, async (docSnap) => {
-      if (docSnap.exists()) {
-        // --- Session Document Exists --- 
-        const data = docSnap.data();
-        const status = data.status;
-        console.log(`[Listener] Received snapshot. Status: ${status}`, data);
-
-        sessionCreationAttempted.current = true; // Mark as found/created
-        const lastActivity = data.lastActivityAt; // Firestore Timestamp or null
-        const STALE_THRESHOLD_MS = 2 * 60 * 1000; // 2 minutes
-
-        // ** Stale Session Check (Include 'available' as potentially stale) **
-        if ((status === 'active' || status === 'checkout_initiated' || status === 'available') && lastActivity?.toMillis) {
-            const timeSinceLastActivity = Date.now() - lastActivity.toMillis();
-            // Add extra check: Only delete 'available' status if it's REALLY old maybe?
-            // Or just delete any old session regardless of status being active/checkout/available
-            // Let's delete any session older than the threshold for simplicity now.
-            if (timeSinceLastActivity > STALE_THRESHOLD_MS) {
-                console.warn(`Session ${cartId} detected as stale (Status: ${status}, last activity ${Math.round(timeSinceLastActivity / 60000)} mins ago). Calling handleStaleSession...`);
-                handleStaleSession(cartId); 
-                return; // Stop processing this snapshot, wait for reset update
-            }
-        }
-        // ** End Stale Session Check **
-
-        // Only update state if the session wasn't deemed stale in this run
-        setSessionData(data); 
-        setError(''); // Clear errors
-        setDetailsError(''); 
-        // Fetch store data if needed
-        if (data.storeId && !storeData) {
-             fetchStoreData(data.storeId);
-        }
-        // Pre-fill phone number if present
-        if (data.customerPhoneNumber && !customerPhoneNumber) {
-            setCustomerPhoneNumber(data.customerPhoneNumber);
-        }
-        // Pre-fill name if available in session (or customer record later)
-        if (data.customerName && !customerName) {
-            setCustomerName(data.customerName);
-        }
-
-        // Set provisional bill number if present in data
-        if (data.provisionalBillNumber) {
-            setProvisionalBillNo(data.provisionalBillNumber);
-        }
-        
-        // Deactivate activating state if session is active
-        if (data.status === 'active' || data.status === 'checkout_initiated') {
-             setIsActivating(false);
-        }
+    const initializeSession = async () => {
+      if (!cartId) {
+        setError('No Cart ID provided in URL.');
         setIsLoading(false);
-      } else {
-        // --- Session Document DOES NOT Exist --- 
-        console.log(`Cart session ${cartId} not found. Checking physical cart...`);
-        // Avoid multiple creation attempts
-        if (sessionCreationAttempted.current) {
-            console.log("Session creation already attempted or session found previously, skipping.");
-             if (!isLoading && !error) {
-                 // If creation was attempted and session *still* doesn't exist, the physical cart must be unavailable
-                 setError(`Session for cart ${cartId} could not be started or found. Check physical cart status.`);
-             }
-            return;
-        }
-        sessionCreationAttempted.current = true; // Mark that we are attempting creation
-
-        try {
-            // 1. Check the physical cart in the 'carts' collection
-            const physicalCartRef = doc(db, 'carts', cartId);
-            const physicalCartSnap = await getDoc(physicalCartRef);
-
-            if (physicalCartSnap.exists()) {
-                let physicalCartStatus = physicalCartSnap.data().status;
-                console.log(`Physical cart ${cartId} found. Status: ${physicalCartStatus}`);
-
-                // ** NEW: Attempt to reset physical cart if 'in_use' **
-                if (physicalCartStatus === 'in_use') {
-                    console.warn(`Physical cart ${cartId} is 'in_use'. Attempting client-side reset to 'available'...`);
-                    try {
-                        await updateDoc(physicalCartRef, { status: 'available', lastActivity: serverTimestamp() });
-                        console.log(`Client-side reset successful for physical cart ${cartId}.`);
-                        physicalCartStatus = 'available'; // Assume success for the next check
-                    } catch (resetError) {
-                        console.error(`Client-side reset failed for physical cart ${cartId}:`, resetError);
-                        // Proceed anyway, the session creation check below will handle the final state
-                    }
-                }
-                // ** End NEW **
-
-                // Now check if it's available (either initially or after reset attempt)
-                if (physicalCartStatus === 'available') { 
-                    console.log(`Physical cart ${cartId} is available. Creating session...`);
-                    const physicalCartData = physicalCartSnap.data();
-
-                    // Create the new cart session document
-                    const newSessionData = {
-                        cartDisplayId: physicalCartData.cartDisplayId || cartId,
-                        cartFirestoreId: cartId, 
-                        storeId: physicalCartData.storeId,
-                        status: 'pending_details', 
-                        customerId: null,
-                        customerPhoneNumber: null,
-                        customerName: null,
-                        currentItems: [],
-                        currentTotalAmount: 0,
-                        currentExpectedWeight: 0,
-                        createdAt: serverTimestamp(),
-                        lastActivityAt: serverTimestamp(),
-                        activatedAt: null
-                    };
-                    // Use sessionRef defined outside this block
-                    await setDoc(doc(db, 'cartSessions', cartId), newSessionData); 
-                    console.log(`Cart session ${cartId} creation initiated.`);
-                    
-                    // Update physical cart status to 'in_use' (now that session is created)
-                    await updateDoc(physicalCartRef, { status: 'in_use', lastActivity: serverTimestamp() });
-                    console.log(`Physical cart ${cartId} status updated to in_use.`);
-                    // Listener will pick up the new session
-                    
-                } else {
-                    // Physical cart exists but is NOT available (e.g., reset failed or was already unavailable)
-                    console.error(`Cannot start session: Physical cart ${cartId} is not available (its status is ${physicalCartStatus}).`);
-                    setError(`Shopping cart ${cartId} is not available.`);
-                    setSessionData(null);
-                    setIsLoading(false);
-                }
-            } else {
-                 // Physical cart document itself doesn't exist
-                 console.error(`Cannot start session: Physical cart ${cartId} does not exist.`);
-                 setError(`Shopping cart ${cartId} does not exist.`);
-                 setSessionData(null);
-                 setIsLoading(false);
-            }
-        } catch (err) {
-             console.error("Error checking physical cart or creating session:", err);
-             setError('Failed to initialize the shopping session. Please try again.');
-             setSessionData(null);
-             setIsLoading(false);
-        }
+        return;
       }
-    }, (err) => {
-      // --- Listener Error --- 
-      console.error("Error listening to cart session:", err);
-      setError('Failed to load cart session data due to a listener error.');
-      setSessionData(null);
-      setIsLoading(false);
-      setIsActivating(false); // Reset activation on listener error
-    });
 
-    // Cleanup listener on unmount
-    return () => unsubscribe();
+      try {
+        // Set up real-time listener for cart session
+        const sessionRef = doc(db, 'cartSessions', cartId);
+        unsubscribe = onSnapshot(sessionRef, async (docSnap) => {
+          if (docSnap.exists()) {
+            const data = docSnap.data();
+            setSessionData(data);
+            
+            // Fetch store data if needed
+            if (data.storeId && !storeData) {
+              await fetchStoreData(data.storeId);
+            }
 
-  }, [cartId]); // Re-run only if cartId changes
+            // Pre-fill customer details if available
+            if (data.customerPhoneNumber && !customerPhoneNumber) {
+              setCustomerPhoneNumber(data.customerPhoneNumber);
+            }
+            if (data.customerName && !customerName) {
+              setCustomerName(data.customerName);
+            }
+
+            setError('');
+          } else {
+            // Session doesn't exist, try to create it
+            await createNewSession();
+          }
+          setIsLoading(false);
+        }, (error) => {
+          console.error("Error in session listener:", error);
+          setError('Failed to monitor cart session. Please refresh.');
+          setIsLoading(false);
+        });
+
+      } catch (err) {
+        console.error("Error initializing session:", err);
+        setError('Failed to initialize shopping session. Please refresh.');
+        setIsLoading(false);
+      }
+    };
+
+    initializeSession();
+
+    return () => {
+      if (unsubscribe) {
+        unsubscribe();
+      }
+    };
+  }, [cartId]);
+
+  const createNewSession = async () => {
+    try {
+      // Check physical cart first
+      const physicalCartRef = doc(db, 'carts', cartId);
+      const physicalCartSnap = await getDoc(physicalCartRef);
+
+      if (!physicalCartSnap.exists()) {
+        throw new Error(`Cart ${cartId} not found.`);
+      }
+
+      const cartData = physicalCartSnap.data();
+      
+      // Create new session
+      const sessionRef = doc(db, 'cartSessions', cartId);
+      await setDoc(sessionRef, {
+        cartId: cartId,
+        cartDisplayId: cartData.cartDisplayId || cartId,
+        storeId: cartData.storeId,
+        status: 'pending_details',
+        customerId: null,
+        customerPhoneNumber: null,
+        customerName: null,
+        currentItems: [],
+        currentTotalAmount: 0,
+        createdAt: serverTimestamp(),
+        lastActivityAt: serverTimestamp()
+      });
+
+      // Update physical cart status
+      await updateDoc(physicalCartRef, {
+        status: 'in_use',
+        lastActivity: serverTimestamp()
+      });
+
+    } catch (err) {
+      console.error("Error creating new session:", err);
+      throw err;
+    }
+  };
+
+  // --- Handle Stale Session --- 
+  const handleStaleSession = async (staleCartId) => {
+    console.log(`[handleStaleSession] Attempting cleanup for stale session ${staleCartId}`);
+    try {
+      const batch = writeBatch(db);
+      
+      // 1. First reset the physical cart to available
+      const physicalCartRef = doc(db, 'carts', staleCartId);
+      batch.update(physicalCartRef, { 
+        status: 'available', 
+        lastActivity: serverTimestamp() 
+      });
+      
+      // 2. Delete the stale cart session
+      const sessionRef = doc(db, 'cartSessions', staleCartId);
+      batch.delete(sessionRef);
+      
+      // 3. Execute both operations atomically
+      await batch.commit();
+      console.log(`[handleStaleSession] Successfully cleaned up session ${staleCartId}`);
+
+      // 4. Reset the session to pending_details
+      await createNewSession();
+
+    } catch (error) {
+      console.error(`[handleStaleSession] Error during cleanup:`, error);
+      setError(`Failed to clean up stale session. Please refresh.`);
+    }
+  };
 
   // useEffect to generate provisional bill number when session becomes active
   useEffect(() => {
@@ -295,12 +267,10 @@ const BillingDashboardPage = () => {
         if(storeSnap.exists()) {
             setStoreData(storeSnap.data());
         } else {
-            console.warn("Store data not found for session storeId:", storeId);
-            setError(prev => (prev ? prev + '; ' : '') + ' Store details missing.');
+            console.warn("Store data not found:", storeId);
         }
      } catch (err) {
         console.error("Error fetching store data:", err);
-        setError(prev => (prev ? prev + '; ' : '') + ' Failed to load store details.');
      }
   };
 
@@ -424,23 +394,43 @@ const BillingDashboardPage = () => {
         if (!sessionData?.storeId) {
             throw new Error("Session data or Store ID is not loaded yet.");
         }
+        console.log('Looking up barcode:', barcode, 'for store:', sessionData.storeId);
+        
         const itemsRef = collection(db, 'inventoryItems');
-        const q = query( itemsRef, where('barcode', '==', barcode), where('storeId', '==', sessionData.storeId) );
+        const q = query(
+            itemsRef,
+            where('barcode', '==', barcode),
+            where('storeId', '==', sessionData.storeId)
+        );
+        
         const inventorySnapshot = await getDocs(q);
         let inventoryItemDoc = null;
         let inventoryItemData = null;
+        
+        if (inventorySnapshot.empty) {
+            console.error('No inventory item found for barcode:', barcode);
+            throw new Error(`Product with barcode ${barcode} not found in inventory`);
+        }
         const itemsInCart = sessionData.currentItems || [];
         const existingItemIndex = itemsInCart.findIndex(item => item.barcode === barcode);
+        
+        // Log more details for debugging
+        console.log('Session Data:', sessionData);
+        console.log('Inventory Snapshot:', inventorySnapshot.docs.map(doc => doc.data()));
+        
         if (existingItemIndex > -1) {
              console.log(`Item ${barcode} found in current cart, proceeding to removal.`);
              inventoryItemData = itemsInCart[existingItemIndex]; 
         } else if (!inventorySnapshot.empty) {
             inventoryItemDoc = inventorySnapshot.docs[0]; 
             inventoryItemData = inventoryItemDoc.data();
+            console.log('Found inventory item:', inventoryItemData);
+            
             if (inventoryItemData.status !== 'in_stock') {
                 throw new Error(`Item ${barcode} cannot be added as it's not currently in stock (${inventoryItemData.status}).`);
             }
         } else {
+            console.error(`Item lookup failed. Store ID: ${sessionData.storeId}, Barcode: ${barcode}`);
             throw new Error(`Item with barcode ${barcode} not found for this store.`);
         }
         const productId = inventoryItemData.productId; 
@@ -485,10 +475,20 @@ const BillingDashboardPage = () => {
                 amountChange = itemSessionData.price;
                 weightChange = itemSessionData.weightValue;
             }
+            console.log('Updating session with:', {
+                items: updatedItems,
+                amountChange,
+                weightChange
+            });
+            
+            // Calculate new totals directly instead of using increment
+            const newTotalAmount = (currentSessionData.currentTotalAmount || 0) + amountChange;
+            const newTotalWeight = (currentSessionData.currentExpectedWeight || 0) + weightChange;
+            
             transaction.update(sessionRef, {
                 currentItems: updatedItems,
-                currentTotalAmount: increment(amountChange),
-                currentExpectedWeight: increment(weightChange),
+                currentTotalAmount: newTotalAmount,
+                currentExpectedWeight: newTotalWeight,
                 lastActivityAt: serverTimestamp()
             });
         });
@@ -525,13 +525,13 @@ const BillingDashboardPage = () => {
           return;
       }
       
-      // 1. Get Date in YYYY/MM/DD format
+      // 1. Get Date in YYYYMMDD format
       const now = new Date();
       const yyyy = String(now.getFullYear());
       const mm = String(now.getMonth() + 1).padStart(2, '0');
       const dd = String(now.getDate()).padStart(2, '0');
-      const dateStr = `${yyyy}${mm}${dd}`; // Format with slashes
-      const fullDateStr = `${yyyy}-${mm}-${dd}`; // For counter ID (uses hyphens)
+      const dateStr = `${yyyy}${mm}${dd}`;
+      const fullDateStr = `${yyyy}-${mm}-${dd}`;
 
       // 2. Counter Doc ID (for daily customer count)
       const counterDocId = `${sessionData.storeId}_${fullDateStr}`;
@@ -542,18 +542,16 @@ const BillingDashboardPage = () => {
 
       try {
           await runTransaction(db, async (transaction) => {
+              // Get Counter Document
               const counterDoc = await transaction.get(counterRef);
               let currentCount = counterDoc.exists() ? (counterDoc.data().count || 0) : 0;
               
-              // Increment count by 1 and handle rollover
+              // Increment count
               currentCount = currentCount + 1;
-              if (currentCount > 500) currentCount = 1;
+              if (currentCount > 9999) currentCount = 1; // Reset after 9999
               
-              // Format number as single digit (1-9)
-              const customerSerial = String(currentCount % 10 || 10);
-
-              // 4. Construct Bill Number in format: YYYY/MM/DD@CustomerSerial
-              const billNumber = `${dateStr}${customerSerial}`;
+              // Format bill number: YYYYMMDDXXXX where XXXX is padded count
+              const billNumber = `${dateStr}${String(currentCount).padStart(4, '0')}`;
               console.log(`Generated Provisional Bill No: ${billNumber}`);
 
               // 5. Update Counter
@@ -713,23 +711,6 @@ const BillingDashboardPage = () => {
           setIsGeneratingBill(false);
       }
       // Note: isGeneratingBill might stay true if redirection happens immediately
-  };
-
-  // --- Handle Stale Session --- (SIMPLIFIED - Deletes Session Only)
-  const handleStaleSession = async (staleCartId) => {
-    console.log(`[handleStaleSession] Attempting to delete stale session ${staleCartId}`);
-    const sessionRef = doc(db, "cartSessions", staleCartId);
-
-    try {
-      // Delete the stale Cart Session document
-      await deleteDoc(sessionRef);
-      console.log(`[handleStaleSession] Successfully deleted stale session ${staleCartId}.`);
-      // The listener should now receive a non-existent snapshot.
-
-    } catch (error) {
-      console.error(`[handleStaleSession] Failed to delete stale session ${staleCartId}:`, error);
-      setError(`Failed to clean up stale session. Please refresh.`);
-    }
   };
 
   // --- Render Logic ---

@@ -1,0 +1,143 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // --- Cart Hardware Status ---
+    match /cartHardware/{cartId} {
+      allow read: if true;
+      allow update, create: if 
+        request.resource.data.isOnline is bool &&
+        request.resource.data.connectionType in ['wifi', 'gsm'] &&
+        request.resource.data.signalStrength is number &&
+        request.resource.data.cartId == cartId &&
+        request.resource.data.lastSeen == request.time;
+      allow delete: if false;
+      allow list: if false;
+    }
+
+    // --- Users ---
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+
+    // --- Stores ---
+    match /stores/{storeId} {
+      allow write: if request.auth != null && request.auth.uid == storeId;
+      allow read: if true;
+    }
+
+    // --- Carts --- (Physical Carts)
+    match /carts/{cartId} {
+      allow create: if request.auth != null && request.auth.uid == request.resource.data.storeId;
+      allow update, delete: if request.auth != null && request.auth.uid == resource.data.storeId;
+      allow read: if true;
+      allow list: if request.auth != null && request.query.limit <= 100;
+    }
+
+    // --- Products ---
+    match /products/{productId} {
+      allow create: if request.auth != null && request.auth.uid == request.resource.data.storeId;
+      allow update, delete: if request.auth != null && request.auth.uid == resource.data.storeId;
+      allow read: if true;
+      allow list: if request.auth != null && request.query.limit <= 100;
+    }
+
+    // --- Inventory Items ---
+    match /inventoryItems/{itemId} {
+      allow create: if request.auth != null && request.auth.uid == request.resource.data.storeId;
+      allow update, delete: if request.auth != null && request.auth.uid == resource.data.storeId;
+      allow read: if true;
+      allow list: if request.auth != null && request.query.limit <= 100;
+    }
+
+    // --- Customers ---
+    match /customers/{customerId} {
+      allow create: if request.resource.data.phoneNumber is string
+                    && request.resource.data.storeId is string
+                    && request.resource.data.name is string
+                    && request.resource.data.createdAt == request.time
+                    && request.resource.data.lastInteractionAt == request.time
+                    && request.resource.data.keys().hasOnly(['phoneNumber', 'storeId', 'name', 'createdAt', 'lastInteractionAt']);
+
+      allow read: if true;
+
+      allow update: if request.resource.data.lastInteractionAt == request.time
+                    && ((resource.data.name == null && request.resource.data.name is string && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['name', 'lastInteractionAt']))
+                        || request.resource.data.diff(resource.data).affectedKeys().hasOnly(['lastInteractionAt']))
+                    && request.resource.data.phoneNumber == resource.data.phoneNumber
+                    && request.resource.data.storeId == resource.data.storeId
+                    && request.resource.data.createdAt == resource.data.createdAt;
+
+      allow list, delete: if false;
+    }
+
+    // --- Daily Counters ---
+    match /dailyCounters/{counterId} {
+      allow read, write: if true;
+      allow list, delete: if false;
+    }
+
+    // --- Bills Collection ---
+    match /bills/{billId} {
+      allow create: if request.resource.data.storeId is string
+                    && request.resource.data.billNumber == billId
+                    && request.resource.data.cartId is string
+                    && request.resource.data.totalAmount is number
+                    && request.resource.data.items is list
+                    && request.resource.data.date is string
+                    && request.resource.data.savedAt == request.time;
+
+      allow read: if request.auth != null && request.auth.uid == resource.data.storeId;
+      allow list: if request.auth != null && request.auth.uid == resource.data.storeId && request.query.limit <= 100;
+      allow update, delete: if false;
+    }
+
+    // --- Cart Sessions ---
+    match /cartSessions/{sessionId} {
+      allow create: if exists(/databases/$(database)/documents/carts/$(sessionId))
+                    && get(/databases/$(database)/documents/carts/$(sessionId)).data.status == 'available'
+                    && request.resource.data.status == 'pending_details'
+                    && request.resource.data.cartDisplayId is string
+                    && request.resource.data.storeId is string
+                    && request.resource.data.createdAt == request.time
+                    && request.resource.data.lastActivityAt == request.time;
+
+      allow read: if true;
+
+      allow update: if 
+        // 1. Activating cart (pending_details -> active)
+        (resource.data.status == 'pending_details' 
+          && request.resource.data.status == 'active'
+          && request.resource.data.customerPhoneNumber is string
+          && request.resource.data.customerName is string
+          && request.resource.data.customerId is string
+          && request.resource.data.activatedAt == request.time
+          && request.resource.data.lastActivityAt == request.time)
+        ||
+        // 2. Updating items while active
+        (resource.data.status == 'active' 
+          && request.resource.data.status == 'active'
+          && request.resource.data.lastActivityAt == request.time)
+        ||
+        // 3. Adding provisional bill number
+        (resource.data.status == 'active'
+          && request.resource.data.status == 'active'
+          && request.resource.data.provisionalBillNumber is string
+          && request.resource.data.lastActivityAt == request.time)
+        ||
+        // 4. Initiating checkout
+        (resource.data.status == 'active'
+          && request.resource.data.status == 'checkout_initiated'
+          && request.resource.data.finalBillNumber is string
+          && request.resource.data.lastActivityAt == request.time)
+        ||
+        // 5. Moving to completion or payment states
+        (resource.data.status in ['checkout_initiated', 'active']
+          && request.resource.data.status in ['completed', 'payment_success', 'error']
+          && request.resource.data.lastActivityAt == request.time);
+
+      allow delete: if resource.data.status in ['active', 'checkout_initiated', 'available'];
+      allow list: if false;
+    }
+  }
+}
